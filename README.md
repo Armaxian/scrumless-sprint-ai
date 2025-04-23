@@ -1,73 +1,105 @@
-# Welcome to your Lovable project
+# Scrumless.ai
 
-## Project info
+Scrumless.ai is a powerful platform that automates agile methodology practices, specifically designed to streamline Scrum processes and free up more time for development.
 
-**URL**: https://lovable.dev/projects/12e713cb-ac4b-4cd3-97a1-19ae601ac64a
+## Features
 
-## How can I edit this code?
+### Automated Stand-ups
+- 🤖 Collects status updates directly from Git commits, issue trackers, and team calendars
+- 📊 Generates daily summaries without requiring meetings
+- 🚩 Identifies blockers automatically and routes them to the right people
 
-There are several ways of editing your application.
+### AI-Powered Sprint Planning
+- 📝 Generates user stories from epics with accurate sizing
+- 🧠 Suggests priorities based on historical velocity data
+- 📈 Optimizes sprint capacity and team allocation
 
-**Use Lovable**
+### Intelligent Retrospectives
+- 📋 Identifies patterns from sprint data and team communications
+- 🔍 Clusters feedback into actionable themes
+- 📌 Suggests concrete experiments for improvement
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/12e713cb-ac4b-4cd3-97a1-19ae601ac64a) and start prompting.
+### Integrations
+- GitHub/GitLab for code tracking
+- Jira/Linear/Trello for ticket management
+- Slack/Teams for communications
+- Google/Microsoft Calendar for scheduling
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
+- Node.js 18.x or higher
+- npm 8.x or higher
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/scrumless-ai.git
+cd scrumless-ai
+```
 
-Follow these steps:
+2. Install dependencies:
+```bash
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+Edit `.env.local` to include your API keys and configuration settings.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at http://localhost:5173.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Project Structure
 
-**Use GitHub Codespaces**
+```
+scrumless-ai/
+├── src/
+│   ├── components/       # UI components
+│   │   ├── layout/       # Layout components
+│   │   ├── ui/           # Basic UI elements
+│   │   └── widgets/      # Complex UI widgets
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utilities and API services
+│   ├── pages/            # Page components
+│   └── main.tsx          # Application entry point
+├── public/               # Static assets
+└── ... (config files)    # Configuration files
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Technical Details
 
-## What technologies are used for this project?
+- **Frontend**: React with TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **State Management**: React Context + React Query
+- **Routing**: React Router
+- **UI Components**: Radix UI primitives
+- **Charts**: Recharts
 
-This project is built with:
+## Backend Requirements
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This frontend application requires a backend API to function fully. The backend should provide:
 
-## How can I deploy this project?
+1. Authentication endpoints
+2. Team management services
+3. Stand-up data collection and synthesis
+4. Sprint planning capabilities
+5. Retrospective data analysis
+6. Integration with external services
 
-Simply open [Lovable](https://lovable.dev/projects/12e713cb-ac4b-4cd3-97a1-19ae601ac64a) and click on Share -> Publish.
+The frontend is configured to communicate with a backend server at `http://localhost:3000/api` by default, but this can be changed in the environment variables.
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
+[MIT License](LICENSE)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Contact
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+For questions, reach out to support@scrumless.ai
