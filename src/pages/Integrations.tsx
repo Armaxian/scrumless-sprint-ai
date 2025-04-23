@@ -138,14 +138,10 @@ const Integrations = () => {
       try {
         setLoading(true);
         
-        // In a real implementation this would be:
-        // const response = await integrationService.getIntegrations();
-        // setData(response.data);
+        const response = await integrationService.getIntegrations();
+        setData(response.data);
         
-        // Simulate API delay
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false);
       } catch (error) {
         toast({
           title: "Error loading integrations",
@@ -163,53 +159,18 @@ const Integrations = () => {
     try {
       setConnecting(true);
       
-      // In a real implementation, this would typically redirect to OAuth flow
-      // For demo purposes, we'll simulate success after a delay
-      // await integrationService.connectIntegration(integrationType);
+      await integrationService.connectIntegration(integrationType, {});
       
       toast({
-        title: "Redirecting to authorization",
-        description: `You'll be redirected to authorize ${integrationType}`,
+        title: "Integration connected",
+        description: `Successfully connected to ${integrationType}`,
       });
       
-      // Simulate the OAuth flow completing
-      setTimeout(() => {
-        // Find the integration to "connect"
-        const integration = data.availableIntegrations.find(i => i.type === integrationType);
-        
-        if (integration) {
-          // Update state to reflect the new connection
-          setData(prevData => ({
-            ...prevData,
-            activeIntegrations: [
-              ...prevData.activeIntegrations,
-              {
-                id: `new-${integrationType}-${Date.now()}`,
-                type: integrationType,
-                name: integration.name,
-                connectedAt: new Date().toISOString(),
-                status: 'connected',
-                details: {
-                  // Mock details based on integration type
-                  organization: integrationType === 'github' ? 'scrumless-ai' : undefined,
-                  workspace: integrationType === 'slack' ? 'scrumless-ai' : undefined,
-                  repositories: integrationType === 'github' ? [{ name: 'example-repo', status: 'synced', lastSync: new Date().toISOString() }] : undefined,
-                  channels: integrationType === 'slack' ? [{ name: '#general', status: 'active' }] : undefined,
-                },
-                icon: integration.icon,
-              },
-            ],
-            availableIntegrations: prevData.availableIntegrations.filter(i => i.type !== integrationType),
-          }));
-          
-          toast({
-            title: "Integration connected",
-            description: `Successfully connected to ${integration.name}`,
-          });
-        }
-        
-        setConnecting(false);
-      }, 2000);
+      // Refresh integration data after connecting
+      const response = await integrationService.getIntegrations();
+      setData(response.data);
+      
+      setConnecting(false);
     } catch (error) {
       toast({
         title: "Connection failed",
@@ -222,36 +183,14 @@ const Integrations = () => {
 
   const handleDisconnect = async (integrationId: string) => {
     try {
-      // In a real implementation this would be:
-      // await integrationService.disconnectIntegration(integrationId);
-      
-      // Find the integration to disconnect
       const integration = data.activeIntegrations.find(i => i.id === integrationId);
       
       if (integration) {
-        // Update state to reflect the disconnection
-        setData(prevData => ({
-          ...prevData,
-          activeIntegrations: prevData.activeIntegrations.filter(i => i.id !== integrationId),
-          availableIntegrations: [
-            ...prevData.availableIntegrations,
-            {
-              id: `available-${integration.type}-${Date.now()}`,
-              type: integration.type,
-              name: integration.name,
-              description: `Connect to ${integration.name} for code repositories and collaboration`,
-              icon: integration.icon,
-            },
-          ],
-          recentActivity: [
-            {
-              id: `activity-${Date.now()}`,
-              message: `${integration.name} integration disconnected`,
-              timestamp: new Date().toISOString(),
-            },
-            ...prevData.recentActivity,
-          ],
-        }));
+        await integrationService.disconnectIntegration(integration.type);
+        
+        // Refresh integration data after disconnecting
+        const response = await integrationService.getIntegrations();
+        setData(response.data);
         
         toast({
           title: "Integration disconnected",
@@ -271,55 +210,26 @@ const Integrations = () => {
     try {
       setSyncingIntegration(integrationId);
       
-      // In a real implementation this would be:
-      // await integrationService.syncData(integrationId);
+      const integration = data.activeIntegrations.find(i => i.id === integrationId);
       
-      // Simulate API delay
-      setTimeout(() => {
-        // Update the last sync time
-        setData(prevData => ({
-          ...prevData,
-          activeIntegrations: prevData.activeIntegrations.map(integration => {
-            if (integration.id === integrationId) {
-              // Update details based on the integration type
-              if (integration.type === 'github' && integration.details.repositories) {
-                return {
-                  ...integration,
-                  details: {
-                    ...integration.details,
-                    repositories: integration.details.repositories.map(repo => ({
-                      ...repo,
-                      status: 'synced',
-                      lastSync: new Date().toISOString(),
-                    })),
-                  },
-                };
-              }
-              return integration;
-            }
-            return integration;
-          }),
-          recentActivity: [
-            {
-              id: `activity-${Date.now()}`,
-              message: `${prevData.activeIntegrations.find(i => i.id === integrationId)?.name} integration synced`,
-              timestamp: new Date().toISOString(),
-            },
-            ...prevData.recentActivity,
-          ],
-        }));
+      if (integration) {
+        await integrationService.syncData(integration.type);
+        
+        // Refresh integration data after syncing
+        const response = await integrationService.getIntegrations();
+        setData(response.data);
         
         toast({
           title: "Sync complete",
           description: "Successfully synchronized data from the integration",
         });
-        
-        setSyncingIntegration(null);
-      }, 2000);
+      }
+      
+      setSyncingIntegration(null);
     } catch (error) {
       toast({
         title: "Sync failed",
-        description: "Could not synchronize data. Please try again.",
+        description: "Could not sync data from the integration. Please try again.",
         variant: "destructive",
       });
       setSyncingIntegration(null);

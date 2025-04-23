@@ -1,13 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { authService } from './api';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl?: string;
-  teams?: string[];
-}
+import { authService, User } from './api';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -44,10 +37,9 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
           setUser(response.data);
         }
       } catch (err) {
-        // Clear invalid token
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_data');
-        setError('Session expired, please log in again');
+        // Error will be handled by the axios interceptor which will
+        // try to refresh the token or redirect to login
+        console.error('Auth check error:', err);
       } finally {
         setLoading(false);
       }
@@ -64,13 +56,15 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       const response = await authService.login(provider, code);
       const { token, user: userData } = response.data;
       
-      // Store token and user data
+      // Store token in localStorage (refresh token is in httpOnly cookie)
       localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_data', JSON.stringify(userData));
       
       setUser(userData);
+      toast.success('Successfully logged in');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      setError(errorMsg);
+      toast.error(errorMsg);
       throw err;
     } finally {
       setLoading(false);
@@ -81,12 +75,13 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     try {
       setLoading(true);
       await authService.logout();
+      toast.success('Successfully logged out');
     } catch (err) {
       console.error('Logout error:', err);
+      toast.error('Error logging out');
     } finally {
       // Clear user data regardless of API success
       localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_data');
       setUser(null);
       setLoading(false);
     }

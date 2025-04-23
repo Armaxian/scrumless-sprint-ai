@@ -19,76 +19,100 @@ import TeamSettings from "./pages/TeamSettings";
 import Integrations from "./pages/Integrations";
 import { AuthProvider } from "./lib/authContext";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+import ErrorBoundary from "./components/error/ErrorBoundary";
 
-const queryClient = new QueryClient();
+// Configure QueryClient with defaults
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Layout><Index /></Layout>} />
-            <Route path="/features" element={<Layout><Features /></Layout>} />
-            <Route path="/product-tour" element={<Layout><ProductTour /></Layout>} />
-            <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
-            <Route path="/blog" element={<Layout><Blog /></Layout>} />
-            <Route path="/login" element={<Layout simple><Login /></Layout>} />
-            
-            {/* Protected routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <Dashboard />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/standup" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <StandupSummary />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/sprint-planning" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <SprintPlanning />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/retrospective" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <Retrospective />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/team-settings" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <TeamSettings />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/integrations" element={
-              <ProtectedRoute>
-                <Layout dashboard>
-                  <Integrations />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            
-            {/* Catch-all route */}
-            <Route path="*" element={<Layout><NotFound /></Layout>} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Layout><Index /></Layout>} />
+              <Route path="/features" element={<Layout><Features /></Layout>} />
+              <Route path="/product-tour" element={<Layout><ProductTour /></Layout>} />
+              <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
+              <Route path="/blog" element={<Layout><Blog /></Layout>} />
+              <Route path="/login" element={<Layout simple><Login /></Layout>} />
+              
+              {/* Protected routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <Dashboard />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/standup" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <StandupSummary />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/sprint-planning" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <SprintPlanning />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/retrospective" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <Retrospective />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/team-settings" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <TeamSettings />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/integrations" element={
+                <ProtectedRoute>
+                  <Layout dashboard>
+                    <ErrorBoundary>
+                      <Integrations />
+                    </ErrorBoundary>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<Layout><NotFound /></Layout>} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
