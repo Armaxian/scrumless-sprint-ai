@@ -18,7 +18,24 @@ export default {
 			}
 		},
 		extend: {
+		    fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace'],
+            },
 			colors: {
+				teal: {
+				  DEFAULT: '#00EDC0',
+				  50: '#E6FDF9',
+				  100: '#CFFCF3',
+				  200: '#9FF9E8',
+				  300: '#6FF5DC',
+				  400: '#3FF2D1',
+				  500: '#00EDC0',
+				  600: '#00BE9A',
+				  700: '#008F74',
+				  800: '#00604E',
+				  900: '#003128',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -84,11 +101,46 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'typing': {
+					from: { width: '0' },
+					to: { width: '100%' }
+				},
+				'blink': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'fade-out': {
+					'0%': { opacity: '1', transform: 'translateY(0)' },
+					'100%': { opacity: '0', transform: 'translateY(10px)' }
+				},
+				'scale-in': {
+					'0%': { transform: 'scale(0.95)', opacity: '0' },
+					'100%': { transform: 'scale(1)', opacity: '1' }
+				},
+				'confetti-fall': {
+					'0%': { transform: 'translateY(-100%) rotate(0deg)', opacity: '1' },
+					'100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: '0' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'typing': 'typing 3.5s steps(40, end)',
+				'cursor-blink': 'blink 1s step-end infinite',
+				'fade-in': 'fade-in 0.5s ease-out forwards',
+				'fade-out': 'fade-out 0.5s ease-out forwards',
+				'scale-in': 'scale-in 0.3s ease-out forwards',
+				'confetti': 'confetti-fall 4s ease-out forwards'
+			},
+			boxShadow: {
+				'neon': '0 0 5px theme(colors.teal.400), 0 0 20px theme(colors.teal.500)',
+				'neon-lg': '0 0 10px theme(colors.teal.400), 0 0 30px theme(colors.teal.500)',
+				'card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05)',
 			}
 		}
 	},
